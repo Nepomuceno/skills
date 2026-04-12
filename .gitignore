@@ -1,0 +1,32 @@
+# Agent working directories
+.agents/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+.python-version
+
+# uv
+.uv/
+
+# Node / Bun
+node_modules/
+bun.lockb
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+
+# Build outputs
+dist/
+build/
+*.egg-info/

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skills &amp; Docs — Gabe's Awesome Skills</title>
+  <meta name="description" content="How to structure, author, and add skills to the catalog.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            heading: ['Satoshi', 'system-ui', 'sans-serif'],
+            body: ['General Sans', 'system-ui', 'sans-serif'],
+            mono: ['SF Mono', 'Cascadia Code', 'JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@700,900&f[]=general-sans@400,500,600&display=swap" rel="stylesheet">
+</head>
+<body class="bg-stone-50 text-stone-900 font-body antialiased">
+
+  <!-- Nav -->
+  <nav class="sticky top-0 z-50 bg-stone-50/85 backdrop-blur-md border-b border-stone-200">
+    <div class="max-w-4xl mx-auto px-6 py-4 flex justify-between items-center">
+      <a href="./" class="font-heading font-black text-lg tracking-tight hover:text-stone-900">gabe/skills</a>
+      <ul class="flex gap-6 text-sm font-medium text-stone-500">
+        <li><a href="./" class="hover:text-stone-900">Home</a></li>
+        <li><a href="skills.html" class="text-stone-900 hover:text-stone-900">Skills &amp; Docs</a></li>
+        <li><a href="https://github.com/Nepomuceno/skills" class="hover:text-stone-900">GitHub</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="max-w-3xl mx-auto px-6 py-16 pb-24">
+
+    <h1 class="font-heading font-black text-4xl md:text-5xl tracking-tight mb-3">Skills &amp; Docs</h1>
+    <p class="text-lg text-stone-500 mb-16 max-w-xl">
+      How skills work, how to author them, and the full catalog.
+    </p>
+
+    <!-- How skills work -->
+    <h2 id="how-skills-work" class="font-heading font-bold text-xl md:text-2xl tracking-tight mt-16 pt-10 border-t border-stone-100 first:mt-0 first:pt-0 first:border-t-0 mb-4">How skills work</h2>
+    <p class="text-stone-500 mb-4">
+      A skill is a folder under <code class="text-sm bg-stone-100 px-1.5 py-0.5 rounded">skills/</code> containing at minimum a
+      <code class="text-sm bg-stone-100 px-1.5 py-0.5 rounded">SKILL.md</code>. Agents use progressive disclosure:
+    </p>
+    <ol class="list-decimal pl-6 text-stone-500 space-y-2 mb-6">
+      <li><strong class="text-stone-900">Metadata</strong> (name + description) &mdash; always visible to the agent (~100 words)</li>
+      <li><strong class="text-stone-900">SKILL.md body</strong> &mdash; loaded when the skill triggers (&lt;500 lines ideal)</li>
+      <li><strong class="text-stone-900">Bundled resources</strong> &mdash; loaded on demand (scripts, references, assets)</li>
+    </ol>
+    <p class="text-stone-500 mb-6">
+      This keeps agent context lean. Only the relevant skill content enters the conversation.
+    </p>
+    <pre class="bg-white border border-stone-200 rounded-xl p-6 font-mono text-sm leading-loose text-stone-500 overflow-x-auto"><span class="text-stone-900 font-semibold">skills/my-skill/</span>
+├── <span class="text-stone-900 font-semibold">SKILL.md</span>          <span class="text-stone-400"># required — agent instructions</span>
+├── scripts/          <span class="text-stone-400"># optional — runnable helpers</span>
+├── references/       <span class="text-stone-400"># optional — docs loaded on demand</span>
+└── assets/           <span class="text-stone-400"># optional — templates, icons, etc.</span></pre>
+
+    <!-- SKILL.md format -->
+    <h2 id="skill-md-format" class="font-heading font-bold text-xl md:text-2xl tracking-tight mt-16 pt-10 border-t border-stone-100 mb-4">SKILL.md format</h2>
+    <p class="text-stone-500 mb-4">
+      Every <code class="text-sm bg-stone-100 px-1.5 py-0.5 rounded">SKILL.md</code> starts with YAML frontmatter:
+    </p>
+    <pre class="bg-stone-900 text-stone-300 rounded-xl px-6 py-5 font-mono text-sm leading-relaxed overflow-x-auto"><span class="text-stone-500">---</span>
+<span class="text-purple-300">name</span>: my-skill
+<span class="text-purple-300">description</span>: <span class="text-green-300">&gt;
+  What this skill does and when to use it.
+  Include trigger phrases users would actually type.
+  Lean "pushy" — err toward triggering rather than missing.</span>
+<span class="text-stone-500">---</span>
+
+<span class="text-stone-500"># My Skill</span>
+
+Operational instructions in Markdown.
+Keep under 500 lines. Use references/ for overflow.</pre>
+
+    <!-- Adding a skill -->
+    <h2 id="adding-a-skill" class="font-heading font-bold text-xl md:text-2xl tracking-tight mt-16 pt-10 border-t border-stone-100 mb-4">Adding a skill</h2>
+    <p class="text-stone-500 mb-4">Use the scaffold script or copy manually:</p>
+    <pre class="bg-stone-900 text-stone-300 rounded-xl px-6 py-5 font-mono text-sm leading-relaxed overflow-x-auto"><span class="text-stone-500"># Automated (recommended)</span>
+<span class="text-blue-400 select-none">$ </span><span class="text-purple-300">uv run</span> scripts/new-skill.py <span class="text-green-300">my-skill</span>
+
+<span class="text-stone-500"># Manual</span>
+<span class="text-blue-400 select-none">$ </span><span class="text-purple-300">cp</span> -r templates/skill-template skills/<span class="text-green-300">my-skill</span></pre>
+    <p class="text-stone-500 mt-4">
+      After creating your skill, add an entry to the
+      <a href="#skill-index" class="text-blue-600 hover:text-blue-800">skill index</a> below.
+    </p>
+
+    <!-- Authoring guidelines -->
+    <h2 id="authoring-guidelines" class="font-heading font-bold text-xl md:text-2xl tracking-tight mt-16 pt-10 border-t border-stone-100 mb-4">Authoring guidelines</h2>
+    <ul class="space-y-3 text-stone-500">
+      <li><strong class="text-stone-900">Description</strong> &mdash; say what the skill does AND when to trigger it. Be specific. Include realistic trigger phrases. No vague marketing.</li>
+      <li><strong class="text-stone-900">Instructions</strong> &mdash; imperative voice, concise. Explain <em>why</em> behind constraints instead of heavy-handed MUSTs.</li>
+      <li><strong class="text-stone-900">Examples</strong> &mdash; prefer over explanation when shorter.</li>
+      <li><strong class="text-stone-900">Scripts</strong> &mdash; prefer over long natural-language procedures. Python with <code class="text-sm bg-stone-100 px-1.5 py-0.5 rounded">uv run</code>, TypeScript with <code class="text-sm bg-stone-100 px-1.5 py-0.5 rounded">bun run</code>.</li>
+      <li><strong class="text-stone-900">References</strong> &mdash; use for large docs that don't need to be in context by default. Include a table of contents for files &gt;300 lines.</li>
+      <li><strong class="text-stone-900">No filler</strong> &mdash; every sentence must change behavior or understanding.</li>
+    </ul>
+
+    <!-- Conventions -->
+    <h2 id="conventions" class="font-heading font-bold text-xl md:text-2xl tracking-tight mt-16 pt-10 border-t border-stone-100 mb-4">Conventions</h2>
+    <ul class="space-y-3 text-stone-500">
+      <li>Slug format: lowercase, hyphens, no underscores (<code class="text-sm bg-stone-100 px-1.5 py-0.5 rounded">frontend-design</code>)</li>
+      <li>One folder per skill, always</li>
+      <li><code class="text-sm bg-stone-100 px-1.5 py-0.5 rounded">SKILL.md</code> is the only required file</li>
+      <li>Colocate everything inside the skill folder&mdash;no cross-references between skills</li>
+      <li>Python scripts: use <code class="text-sm bg-stone-100 px-1.5 py-0.5 rounded">uv run</code> with inline dependency metadata</li>
+      <li>TypeScript scripts: use <code class="text-sm bg-stone-100 px-1.5 py-0.5 rounded">bun run</code></li>
+      <li>No Docker, no heavy build systems</li>
+    </ul>
+
+    <!-- Skill index -->
+    <h2 id="skill-index" class="font-heading font-bold text-xl md:text-2xl tracking-tight mt-16 pt-10 border-t border-stone-100 mb-8">Skill index</h2>
+    <div class="text-center py-16 bg-white border border-dashed border-stone-300 rounded-2xl">
+      <h3 class="font-heading font-bold text-stone-400 mb-1">No skills yet</h3>
+      <p class="text-sm text-stone-400">The catalog is empty. <a href="#adding-a-skill" class="text-blue-600 hover:text-blue-800">Create the first skill</a> to populate this list.</p>
+    </div>
+
+    <!--
+      When skills are added, replace the empty state above with entries like:
+
+      <a href="https://github.com/Nepomuceno/skills/tree/main/skills/my-skill"
+         class="block bg-white border border-stone-200 rounded-xl p-6 hover:border-stone-300 hover:shadow-sm transition-all mb-3">
+        <div class="flex items-start justify-between">
+          <div>
+            <h3 class="font-heading font-bold">my-skill</h3>
+            <p class="text-sm text-stone-500 mt-1">Short description of what this skill does.</p>
+          </div>
+          <span class="text-xs font-mono font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full bg-blue-50 text-blue-600">python</span>
+        </div>
+      </a>
+    -->
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-stone-200 py-8 text-center">
+    <p class="text-sm text-stone-400">
+      <a href="https://github.com/Nepomuceno/skills" class="text-stone-500 hover:text-stone-700">Gabe's Awesome Skills</a>
+      &middot; Built with plain HTML &middot; Published with GitHub Pages
+    </p>
+  </footer>
+
+</body>
+</html>

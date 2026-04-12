@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gabe's Awesome Skills</title>
+  <meta name="description" content="A curated collection of reusable AI agent skills. Portable, minimal, and ready to install.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            heading: ['Satoshi', 'system-ui', 'sans-serif'],
+            body: ['General Sans', 'system-ui', 'sans-serif'],
+            mono: ['SF Mono', 'Cascadia Code', 'JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@700,900&f[]=general-sans@400,500,600&display=swap" rel="stylesheet">
+</head>
+<body class="bg-stone-50 text-stone-900 font-body antialiased">
+
+  <!-- Nav -->
+  <nav class="sticky top-0 z-50 bg-stone-50/85 backdrop-blur-md border-b border-stone-200">
+    <div class="max-w-4xl mx-auto px-6 py-4 flex justify-between items-center">
+      <a href="./" class="font-heading font-black text-lg tracking-tight hover:text-stone-900">gabe/skills</a>
+      <ul class="flex gap-6 text-sm font-medium text-stone-500">
+        <li><a href="./" class="text-stone-900 hover:text-stone-900">Home</a></li>
+        <li><a href="skills.html" class="hover:text-stone-900">Skills &amp; Docs</a></li>
+        <li><a href="https://github.com/Nepomuceno/skills" class="hover:text-stone-900">GitHub</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main>
+
+    <!-- Hero -->
+    <section class="pt-24 pb-16 text-center px-6">
+      <h1 class="font-heading font-black text-5xl md:text-6xl tracking-tight mb-4">
+        Gabe's <span class="bg-gradient-to-r from-blue-600 to-violet-600 bg-clip-text text-transparent">Awesome</span> Skills
+      </h1>
+      <p class="text-lg text-stone-500 max-w-lg mx-auto mb-10 leading-relaxed">
+        A curated collection of reusable AI agent skills.
+        Each skill is a self-contained folder your agent loads on demand&mdash;no
+        framework, no lock-in, just sharp instructions that work.
+      </p>
+      <div class="flex gap-3 justify-center flex-wrap">
+        <a href="skills.html" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-stone-900 text-stone-50 text-sm font-semibold hover:bg-stone-800 hover:-translate-y-0.5 transition-all shadow-sm hover:shadow-md">Browse Skills</a>
+        <a href="skills.html#adding-a-skill" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-white text-stone-900 text-sm font-semibold border border-stone-200 hover:bg-stone-100 hover:-translate-y-0.5 transition-all">Create a Skill</a>
+      </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="py-16 border-t border-stone-100">
+      <div class="max-w-4xl mx-auto px-6">
+        <p class="font-mono text-xs font-medium uppercase tracking-widest text-blue-600 mb-2">How it works</p>
+        <h2 class="font-heading font-bold text-2xl md:text-3xl tracking-tight mb-3">One folder. One file. Infinite capability.</h2>
+        <p class="text-stone-500 max-w-2xl mb-10">
+          Skills are knowledge packages that teach AI agents how to do things better.
+          Agents see only a name and description until they need the full
+          instructions&mdash;progressive disclosure keeps context lean.
+        </p>
+        <div class="grid md:grid-cols-3 gap-5">
+          <div class="bg-white border border-stone-200 rounded-2xl p-7 hover:border-stone-300 hover:shadow-sm transition-all">
+            <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-xl mb-4">&#x26A1;</div>
+            <h3 class="font-heading font-bold mb-1.5">Portable</h3>
+            <p class="text-sm text-stone-500 leading-relaxed">No framework dependencies. Works with Claude Code, OpenCode, Codex, Cursor, Copilot, and more.</p>
+          </div>
+          <div class="bg-white border border-stone-200 rounded-2xl p-7 hover:border-stone-300 hover:shadow-sm transition-all">
+            <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-xl mb-4">&#x1F4E6;</div>
+            <h3 class="font-heading font-bold mb-1.5">Self-contained</h3>
+            <p class="text-sm text-stone-500 leading-relaxed">Each skill lives in its own folder with scripts, references, and assets colocated. Easy to share, copy, or install.</p>
+          </div>
+          <div class="bg-white border border-stone-200 rounded-2xl p-7 hover:border-stone-300 hover:shadow-sm transition-all">
+            <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-xl mb-4">&#x2702;</div>
+            <h3 class="font-heading font-bold mb-1.5">Minimal by design</h3>
+            <p class="text-sm text-stone-500 leading-relaxed">No bloat, no boilerplate. Every token in a SKILL.md earns its place. Scripts over essays, examples over explanation.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Skill structure -->
+    <section class="py-16 border-t border-stone-100">
+      <div class="max-w-3xl mx-auto px-6">
+        <p class="font-mono text-xs font-medium uppercase tracking-widest text-blue-600 mb-2">Anatomy</p>
+        <h2 class="font-heading font-bold text-2xl md:text-3xl tracking-tight mb-6">Skill structure</h2>
+        <pre class="bg-white border border-stone-200 rounded-xl p-6 font-mono text-sm leading-loose text-stone-500 overflow-x-auto"><span class="text-stone-900 font-semibold">skills/my-skill/</span>
+├── <span class="text-stone-900 font-semibold">SKILL.md</span>          <span class="text-stone-400"># required — agent instructions</span>
+├── scripts/          <span class="text-stone-400"># optional — helper scripts</span>
+├── references/       <span class="text-stone-400"># optional — docs loaded on demand</span>
+└── assets/           <span class="text-stone-400"># optional — templates, icons, etc.</span></pre>
+        <p class="text-stone-500 mt-5">
+          The only required file is <code class="text-sm bg-stone-100 px-1.5 py-0.5 rounded">SKILL.md</code> with YAML frontmatter
+          containing <code class="text-sm bg-stone-100 px-1.5 py-0.5 rounded">name</code> and
+          <code class="text-sm bg-stone-100 px-1.5 py-0.5 rounded">description</code>.
+          Everything else is optional and loaded only when needed.
+        </p>
+      </div>
+    </section>
+
+    <!-- Quick start -->
+    <section class="py-16 border-t border-stone-100">
+      <div class="max-w-3xl mx-auto px-6">
+        <p class="font-mono text-xs font-medium uppercase tracking-widest text-blue-600 mb-2">Get started</p>
+        <h2 class="font-heading font-bold text-2xl md:text-3xl tracking-tight mb-8">Create a skill in 60 seconds</h2>
+        <div class="space-y-0 divide-y divide-stone-100">
+          <div class="flex gap-5 py-5">
+            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-stone-900 text-stone-50 font-heading font-bold text-xs flex items-center justify-center mt-0.5">1</div>
+            <div>
+              <h3 class="font-heading font-bold mb-2">Scaffold it</h3>
+              <pre class="bg-stone-900 text-stone-300 rounded-lg px-5 py-4 font-mono text-sm overflow-x-auto"><span class="text-blue-400 select-none">$ </span><span class="text-purple-300">uv run</span> scripts/new-skill.py <span class="text-green-300">my-skill</span></pre>
+            </div>
+          </div>
+          <div class="flex gap-5 py-5">
+            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-stone-900 text-stone-50 font-heading font-bold text-xs flex items-center justify-center mt-0.5">2</div>
+            <div>
+              <h3 class="font-heading font-bold mb-1">Write your SKILL.md</h3>
+              <p class="text-sm text-stone-500">Fill in the name, description, and instructions. Keep it concise and trigger-rich.</p>
+            </div>
+          </div>
+          <div class="flex gap-5 py-5">
+            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-stone-900 text-stone-50 font-heading font-bold text-xs flex items-center justify-center mt-0.5">3</div>
+            <div>
+              <h3 class="font-heading font-bold mb-1">Add to the catalog</h3>
+              <p class="text-sm text-stone-500">Add an entry to <a href="skills.html#skill-index" class="text-blue-600 hover:text-blue-800">the skill index</a> and you're done.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Repo layout -->
+    <section class="py-16 border-t border-stone-100">
+      <div class="max-w-3xl mx-auto px-6">
+        <p class="font-mono text-xs font-medium uppercase tracking-widest text-blue-600 mb-2">Repository</p>
+        <h2 class="font-heading font-bold text-2xl md:text-3xl tracking-tight mb-6">Repo layout</h2>
+        <pre class="bg-white border border-stone-200 rounded-xl p-6 font-mono text-sm leading-loose text-stone-500 overflow-x-auto"><span class="text-stone-900 font-semibold">skills/</span>               <span class="text-stone-400"># one folder per skill</span>
+<span class="text-stone-900 font-semibold">templates/</span>            <span class="text-stone-400"># skill template to copy</span>
+<span class="text-stone-900 font-semibold">scripts/</span>              <span class="text-stone-400"># repo automation</span>
+<span class="text-stone-900 font-semibold">docs/</span>                 <span class="text-stone-400"># this site (GitHub Pages)</span>
+AGENTS.md             <span class="text-stone-400"># agent guidance for this repo</span>
+README.md             <span class="text-stone-400"># human orientation</span></pre>
+      </div>
+    </section>
+
+    <!-- Skills catalog -->
+    <section class="py-16 border-t border-stone-100">
+      <div class="max-w-3xl mx-auto px-6">
+        <p class="font-mono text-xs font-medium uppercase tracking-widest text-blue-600 mb-2">Catalog</p>
+        <h2 class="font-heading font-bold text-2xl md:text-3xl tracking-tight mb-8">Skills</h2>
+        <div class="text-center py-16 bg-white border border-dashed border-stone-300 rounded-2xl">
+          <h3 class="font-heading font-bold text-stone-400 mb-1">No skills yet</h3>
+          <p class="text-sm text-stone-400">This is a fresh catalog. <a href="skills.html#adding-a-skill" class="text-blue-600 hover:text-blue-800">Add the first skill</a> to get started.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-stone-200 py-8 text-center">
+    <p class="text-sm text-stone-400">
+      <a href="https://github.com/Nepomuceno/skills" class="text-stone-500 hover:text-stone-700">Gabe's Awesome Skills</a>
+      &middot; Built with plain HTML &middot; Published with GitHub Pages
+    </p>
+  </footer>
+
+</body>
+</html>
