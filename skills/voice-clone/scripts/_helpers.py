@@ -9,13 +9,12 @@ Not meant to be run directly -- imported by the other scripts.
 
 from __future__ import annotations
 
-import json
 import os
 import re
 import subprocess
 import sys
-import time
 from pathlib import Path
+from xml.sax.saxutils import escape as _xml_escape
 
 from dotenv import load_dotenv
 
@@ -109,3 +108,12 @@ def log_step(msg: str) -> None:
     print("=" * 60)
     print(f"  {msg}")
     print("=" * 60)
+
+
+def escape_xml(text: str) -> str:
+    """Escape text for safe embedding in SSML/XML.
+
+    Handles &, <, >, and quotes so user-supplied text can't break
+    the SSML document or inject unintended tags.
+    """
+    return _xml_escape(text, entities={"'": "&apos;", '"': "&quot;"})

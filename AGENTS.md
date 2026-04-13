@@ -89,7 +89,7 @@ Description field rules:
 
 SKILL.md:
 - SKILL.md loads on every invocation — every token counts. Move detailed instructions, examples, and pattern-specific guidance into `references/`
-- Never put environment-specific info (endpoints, subscription IDs, account names, deployed model names) in the skill. Use a discovery script at runtime instead
+- Never put environment-specific info (endpoints, subscription IDs, account names) in the skill. Use a discovery script at runtime instead. Model-family defaults (e.g. `gpt-4o-mini-tts`) are acceptable since they identify the capability, not a specific deployment — but always allow overriding via environment variable or CLI flag
 - The description field should list every phrase a user might type that should activate the skill
 
 Scripts:

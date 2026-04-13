@@ -36,10 +36,11 @@ All scripts are Python and run cross-platform (macOS, Linux, Windows) via
 ```
 AZURE_REGION=eastus2
 AZURE_CUSTOM_SUBDOMAIN=<your-subdomain>
-AZURE_RESOURCE_NAME=<your-resource-name>
-AZURE_RESOURCE_GROUP=<your-resource-group>
-AZURE_SUBSCRIPTION_ID=<your-subscription-id>
 API_VERSION=2024-02-01-preview
+
+# Only needed for synthesize-openai.py:
+OPENAI_API_VERSION=2025-03-01-preview
+DEPLOYMENT_NAME=gpt-4o-mini-tts
 ```
 
 Before running any voice commands, point `az` at the correct subscription --

@@ -26,7 +26,7 @@ from pathlib import Path
 import httpx
 
 sys.path.insert(0, str(Path(__file__).parent))
-from _helpers import get_azure_config, get_token, human_size, load_env, resolve_path
+from _helpers import escape_xml, get_azure_config, get_token, human_size, load_env, resolve_path
 
 
 def main() -> None:
@@ -61,9 +61,9 @@ def main() -> None:
     ssml = (
         "<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' "
         "xmlns:mstts='http://www.w3.org/2001/mstts' xml:lang='en-US'>"
-        f"  <voice name='{args.voice_model}'>"
-        f"    <mstts:ttsembedding speakerProfileId='{speaker_profile_id}'>"
-        f"      {args.text}"
+        f"  <voice name='{escape_xml(args.voice_model)}'>"
+        f"    <mstts:ttsembedding speakerProfileId='{escape_xml(speaker_profile_id)}'>"
+        f"      {escape_xml(args.text)}"
         "    </mstts:ttsembedding>"
         "  </voice>"
         "</speak>"

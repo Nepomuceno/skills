@@ -42,6 +42,10 @@ def check_ffmpeg() -> None:
         print("  Ubuntu:  sudo apt install ffmpeg", file=sys.stderr)
         print("  Windows: winget install ffmpeg  (or https://ffmpeg.org/download.html)", file=sys.stderr)
         sys.exit(1)
+    if not shutil.which("ffprobe"):
+        print("ERROR: ffprobe is not installed (usually bundled with ffmpeg).", file=sys.stderr)
+        print("  Reinstall ffmpeg to get ffprobe.", file=sys.stderr)
+        sys.exit(1)
 
 
 def measure_loudness(input_path: Path, target_lufs: float) -> dict[str, str]:
@@ -55,6 +59,11 @@ def measure_loudness(input_path: Path, target_lufs: float) -> dict[str, str]:
         capture_output=True,
         text=True,
     )
+    if result.returncode != 0:
+        print(f"ERROR: ffmpeg loudness measurement failed for {input_path}:", file=sys.stderr)
+        print(result.stderr, file=sys.stderr)
+        sys.exit(1)
+
     # loudnorm JSON is in stderr
     output = result.stderr
 
@@ -142,6 +151,9 @@ def get_duration(path: Path) -> str:
         capture_output=True,
         text=True,
     )
+    if result.returncode != 0:
+        print(f"  WARNING: ffprobe failed to read duration: {result.stderr.strip()}", file=sys.stderr)
+        return "unknown"
     return result.stdout.strip() or "unknown"
 
 

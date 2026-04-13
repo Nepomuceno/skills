@@ -35,7 +35,7 @@ import httpx
 
 # Allow importing the helpers module from the same directory
 sys.path.insert(0, str(Path(__file__).parent))
-from _helpers import get_azure_config, get_token, human_size, load_env, log_step, resolve_path, safe_name
+from _helpers import escape_xml, get_azure_config, get_token, human_size, load_env, log_step, resolve_path, safe_name
 
 
 def check_operation(client: httpx.Client, operation_url: str, token: str, max_attempts: int = 60) -> dict | None:
@@ -130,10 +130,19 @@ def main() -> None:
             )
         print(f"  HTTP {resp.status_code}")
 
+        if resp.status_code not in (200, 201, 202, 409):
+            print(f"  ERROR: Consent upload failed: {resp.text}", file=sys.stderr)
+            sys.exit(1)
+        if resp.status_code == 409:
+            print("  Consent already exists, continuing.")
+
         operation_url = resp.headers.get("Operation-Location", "")
         if operation_url:
             print("  Waiting for consent processing...")
-            check_operation(client, operation_url, token)
+            result = check_operation(client, operation_url, token)
+            if result is None:
+                print("  ERROR: Consent processing failed or timed out.", file=sys.stderr)
+                sys.exit(1)
 
         # ── Step 4: Create Personal Voice ─────────────────────────────
         log_step(f"Step 4: Creating Personal Voice ({personal_voice_id})")
@@ -153,6 +162,10 @@ def main() -> None:
             )
         print(f"  HTTP {resp.status_code}")
 
+        if resp.status_code not in (200, 201, 202, 409):
+            print(f"  ERROR: Personal voice creation failed: {resp.text}", file=sys.stderr)
+            sys.exit(1)
+
         speaker_profile_id = ""
         try:
             speaker_profile_id = resp.json().get("speakerProfileId", "")
@@ -162,7 +175,10 @@ def main() -> None:
         operation_url = resp.headers.get("Operation-Location", "")
         if operation_url and not speaker_profile_id:
             print("  Waiting for personal voice processing...")
-            check_operation(client, operation_url, token)
+            result = check_operation(client, operation_url, token)
+            if result is None:
+                print("  ERROR: Personal voice processing failed or timed out.", file=sys.stderr)
+                sys.exit(1)
 
         # If we still don't have it, fetch from the API
         if not speaker_profile_id:
@@ -200,8 +216,8 @@ def main() -> None:
             "<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' "
             "xmlns:mstts='http://www.w3.org/2001/mstts' xml:lang='en-US'>"
             "  <voice name='DragonLatestNeural'>"
-            f"    <mstts:ttsembedding speakerProfileId='{speaker_profile_id}'>"
-            f"      {args.text}"
+            f"    <mstts:ttsembedding speakerProfileId='{escape_xml(speaker_profile_id)}'>"
+            f"      {escape_xml(args.text)}"
             "    </mstts:ttsembedding>"
             "  </voice>"
             "</speak>"

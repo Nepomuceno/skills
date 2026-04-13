@@ -53,8 +53,10 @@ the `<lang>` tag inside the SSML body:
 </speak>
 ```
 
-This must be called via the Azure API directly (curl), not through
-`synthesize.sh` which hardcodes `xml:lang='en-US'` without the `<lang>` wrapper.
+This must be called via the Azure API directly, not through
+`synthesize.py` or `synthesize-generic.py` which hardcode `xml:lang='en-US'`
+without the `<lang>` wrapper. Build custom SSML and use `httpx` or `curl`
+directly for multi-language synthesis.
 
 ## SSML with Enhanced Narration
 
