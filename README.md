@@ -2,6 +2,30 @@
 
 Portable catalog of reusable AI agent skills.
 
+## Install
+
+Install all skills with a single command — no cloning required:
+
+```bash
+npx skills add Nepomuceno/skills
+```
+
+Or install a specific skill:
+
+```bash
+npx skills add Nepomuceno/skills --skill image-generation
+npx skills add Nepomuceno/skills --skill voice-clone
+```
+
+Works with Claude Code, OpenCode, Cursor, Codex, GitHub Copilot, and [40+ other agents](https://github.com/vercel-labs/skills#supported-agents).
+
+## Available skills
+
+| Skill | Description |
+|-------|-------------|
+| [image-generation](skills/image-generation) | Generate images via Azure AI Foundry, split grids, and post-process with CLI tools |
+| [voice-clone](skills/voice-clone) | Clone voices and generate speech via Azure Cognitive Services and Azure OpenAI TTS |
+
 ## What this is
 
 A repository that hosts self-contained skills for AI coding agents. Each skill is a folder under `skills/` with a `SKILL.md` that agents load on demand.
@@ -42,13 +66,24 @@ Then:
 
 ## Docs
 
-Published via GitHub Pages from the `/docs` folder on `main`. Plain Markdown, no Jekyll.
+Published via GitHub Pages from the `/docs` folder on `main`. Plain HTML, no Jekyll.
 
-To preview locally, use any static file server:
+To preview locally:
 
 ```bash
-python -m http.server 8000 -d docs
+make docs
 ```
+
+## Validation
+
+Validate all skills and check docs are in sync:
+
+```bash
+make validate     # check SKILL.md frontmatter and structure
+make check-docs   # verify docs list every skill
+```
+
+These checks also run automatically on every PR via GitHub Actions.
 
 ## Agent guidance
 
