@@ -152,22 +152,53 @@ README.md             <span class="text-stone-400"># human orientation</span></p
       <div class="max-w-3xl mx-auto px-6">
         <p class="font-mono text-xs font-medium uppercase tracking-widest text-blue-600 mb-2">Catalog</p>
         <h2 class="font-heading font-bold text-2xl md:text-3xl tracking-tight mb-8">Skills</h2>
-        <a href="https://github.com/Nepomuceno/skills/tree/main/skills/image-generation"
-           class="block bg-white border border-stone-200 rounded-xl p-6 hover:border-stone-300 hover:shadow-sm transition-all mb-3">
-          <div class="flex items-start justify-between">
-            <div>
-              <h3 class="font-heading font-bold">image-generation</h3>
-              <p class="text-sm text-stone-500 mt-1">Generate images via Azure AI Foundry, split grids into individual assets, and post-process with CLI tools. Includes tested default prompt suffixes for flat and detailed icon styles in 2x2 and 3x3 grids.</p>
+        <!-- Install command -->
+        <div class="mb-6 bg-stone-900 text-stone-300 rounded-xl px-6 py-4 font-mono text-sm overflow-x-auto">
+          <span class="text-stone-500 select-none">$ </span><span class="text-purple-300">npx</span> skills add <span class="text-green-300">Nepomuceno/skills</span>
+        </div>
+
+        <div class="bg-white border border-stone-200 rounded-xl p-6 hover:border-stone-300 hover:shadow-sm transition-all mb-3">
+          <a href="https://github.com/Nepomuceno/skills/tree/main/skills/image-generation" class="block">
+            <div class="flex items-start justify-between">
+              <div>
+                <h3 class="font-heading font-bold">image-generation</h3>
+                <p class="text-sm text-stone-500 mt-1">Generate images via Azure AI Foundry, split grids into individual assets, and post-process with CLI tools. Includes tested default prompt suffixes for flat and detailed icon styles in 2x2 and 3x3 grids.</p>
+              </div>
+              <span class="text-xs font-mono font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full bg-blue-50 text-blue-600">python</span>
             </div>
-            <span class="text-xs font-mono font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full bg-blue-50 text-blue-600">python</span>
+            <div class="flex gap-2 mt-3">
+              <span class="text-xs font-mono px-2 py-0.5 rounded bg-stone-100 text-stone-500">4 scripts</span>
+              <span class="text-xs font-mono px-2 py-0.5 rounded bg-stone-100 text-stone-500">5 references</span>
+              <span class="text-xs font-mono px-2 py-0.5 rounded bg-stone-100 text-stone-500">azure</span>
+              <span class="text-xs font-mono px-2 py-0.5 rounded bg-stone-100 text-stone-500">gpt-image-1.5</span>
+            </div>
+          </a>
+          <div class="mt-4 bg-stone-900 text-stone-300 rounded-lg px-4 py-2.5 font-mono text-xs overflow-x-auto">
+            <span class="text-stone-500 select-none">$ </span><span class="text-purple-300">npx</span> skills add <span class="text-green-300">Nepomuceno/skills</span> <span class="text-stone-400">--skill</span> <span class="text-green-300">image-generation</span>
           </div>
-          <div class="flex gap-2 mt-3">
-            <span class="text-xs font-mono px-2 py-0.5 rounded bg-stone-100 text-stone-500">4 scripts</span>
-            <span class="text-xs font-mono px-2 py-0.5 rounded bg-stone-100 text-stone-500">5 references</span>
-            <span class="text-xs font-mono px-2 py-0.5 rounded bg-stone-100 text-stone-500">azure</span>
-            <span class="text-xs font-mono px-2 py-0.5 rounded bg-stone-100 text-stone-500">gpt-image-1.5</span>
+        </div>
+
+        <div class="bg-white border border-stone-200 rounded-xl p-6 hover:border-stone-300 hover:shadow-sm transition-all mb-3">
+          <a href="https://github.com/Nepomuceno/skills/tree/main/skills/voice-clone" class="block">
+            <div class="flex items-start justify-between">
+              <div>
+                <h3 class="font-heading font-bold">voice-clone</h3>
+                <p class="text-sm text-stone-500 mt-1">Clone real voices and generate speech via Azure Cognitive Services Personal Voice, built-in Azure Neural voices, and Azure OpenAI gpt-4o-mini-tts. Full pipeline from recording to normalized multi-speaker narration.</p>
+              </div>
+              <span class="text-xs font-mono font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full bg-blue-50 text-blue-600">python</span>
+            </div>
+            <div class="flex gap-2 mt-3">
+              <span class="text-xs font-mono px-2 py-0.5 rounded bg-stone-100 text-stone-500">7 scripts</span>
+              <span class="text-xs font-mono px-2 py-0.5 rounded bg-stone-100 text-stone-500">3 references</span>
+              <span class="text-xs font-mono px-2 py-0.5 rounded bg-stone-100 text-stone-500">azure</span>
+              <span class="text-xs font-mono px-2 py-0.5 rounded bg-stone-100 text-stone-500">personal-voice</span>
+              <span class="text-xs font-mono px-2 py-0.5 rounded bg-stone-100 text-stone-500">tts</span>
+            </div>
+          </a>
+          <div class="mt-4 bg-stone-900 text-stone-300 rounded-lg px-4 py-2.5 font-mono text-xs overflow-x-auto">
+            <span class="text-stone-500 select-none">$ </span><span class="text-purple-300">npx</span> skills add <span class="text-green-300">Nepomuceno/skills</span> <span class="text-stone-400">--skill</span> <span class="text-green-300">voice-clone</span>
           </div>
-        </a>
+        </div>
       </div>
     </section>
 
