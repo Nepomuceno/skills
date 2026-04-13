@@ -14,7 +14,8 @@ logos, diagrams, product shots, stickers, UI elements.
 ## Prompt guidance
 
 - Explicitly state "on transparent background" or "isolated on blank background"
-- The model handles transparency natively — no post-processing removal needed
+- OpenAI models (gpt-image-1.5) handle transparency natively — no post-processing needed
+- FLUX models don't support native transparency — use `generate-image.py --background transparent` (adds chroma key) then run `chroma-key.py` to strip the background
 - Describe the subject in full detail: shape, color (use hex codes), proportions
 - Specify the art style precisely: "flat vector", "3D isometric render", "hand-drawn sketch"
 - Mention size relative to canvas: "centered, filling about 70% of the canvas"

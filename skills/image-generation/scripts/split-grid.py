@@ -11,7 +11,8 @@ Usage:
     uv run skills/image-generation/scripts/split-grid.py \
         --input grid.png --rows 2 --cols 2 --output-dir tiles/ --trim --validate
 
-Outputs files named tile_{row}_{col}.png in the output directory.
+Outputs files named tile_{row}_{col}.{ext} in the output directory (extension
+matches the input file).
 
 --trim:     Crops each tile to its actual content bounding box by removing
             fully-transparent rows/columns from the edges. Requires the grid
@@ -100,8 +101,11 @@ def trim_transparent(path: str) -> None:
         )
         return
 
-    # Fallback: sips doesn't support trim, but we can do a rough version
-    # by reading the PNG pixel data and computing the content bounding box.
+    # Fallback: sips doesn't support trim — require magick
+    if not shutil.which("magick"):
+        print(f"  Warning: --trim requires magick (ImageMagick). Install with: brew install imagemagick",
+              file=sys.stderr)
+        return
     bbox = _find_content_bbox(path)
     if bbox is None:
         return  # entirely transparent or couldn't read — leave as-is
@@ -116,7 +120,7 @@ def trim_transparent(path: str) -> None:
     os.replace(tmp, path)
 
 
-def validate_tile(path: str, min_content_pct: float = 5.0) -> tuple[bool, float]:
+def validate_tile(path: str, min_content_pct: float = 1.0) -> tuple[bool, float]:
     """Check that a tile has meaningful content.
 
     Returns (is_valid, content_percentage).
@@ -203,6 +207,9 @@ def _parse_png_alpha(path: str) -> tuple[int, int] | None:
                 return None
 
             # Decompress pixel data
+            # NOTE: This doesn't implement PNG scanline unfiltering — only
+            # correct for filter type 0 (None). Results may be inaccurate for
+            # PNGs with other filter types. Install magick for reliable validation.
             compressed = b"".join(idat_chunks)
             raw = zlib.decompress(compressed)
 
@@ -270,6 +277,12 @@ def main() -> None:
         sys.exit(1)
 
     width, height = get_image_size(args.input)
+
+    if width % args.cols != 0 or height % args.rows != 0:
+        print(f"Error: image {width}x{height} is not evenly divisible by "
+              f"{args.rows} rows x {args.cols} cols.", file=sys.stderr)
+        sys.exit(1)
+
     tile_w = width // args.cols
     tile_h = height // args.rows
 

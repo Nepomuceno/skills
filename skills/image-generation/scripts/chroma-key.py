@@ -31,6 +31,7 @@ import os
 import shutil
 import subprocess
 import sys
+import tempfile
 from collections import Counter
 
 
@@ -85,21 +86,34 @@ def apply_progressive_key(input_path: str, output_path: str) -> None:
     bg_color = detect_background_color(input_path)
     print(f"  Detected background: {bg_color} (from 100 corner samples)")
 
+    # Write to a temp file first to avoid corrupting input on in-place writes
+    same_file = os.path.abspath(input_path) == os.path.abspath(output_path)
+    if same_file:
+        fd, tmp_path = tempfile.mkstemp(suffix=".png", dir=os.path.dirname(output_path))
+        os.close(fd)
+    else:
+        tmp_path = output_path
+
     # Build magick command: progressive -transparent at increasing fuzz,
     # then erode alpha by ERODE_PX
     cmd = ["magick", input_path]
     for fuzz in FUZZ_STEPS:
         cmd += ["-fuzz", f"{fuzz}%", "-transparent", bg_color]
     cmd += ["-channel", "A", "-morphology", "Erode", f"Diamond:{ERODE_PX}", "+channel"]
-    cmd += [output_path]
+    cmd += [tmp_path]
 
     steps_str = "→".join(f"{f}%" for f in FUZZ_STEPS)
     print(f"  Progressive key: {steps_str} + {ERODE_PX}px erode")
 
     result = subprocess.run(cmd, capture_output=True, text=True)
     if result.returncode != 0:
+        if same_file and os.path.exists(tmp_path):
+            os.unlink(tmp_path)
         print(f"Error: {result.stderr.strip()}", file=sys.stderr)
         sys.exit(1)
+
+    if same_file:
+        os.replace(tmp_path, output_path)
 
     size = os.path.getsize(output_path)
     print(f"  Saved: {output_path} ({size:,} bytes)")

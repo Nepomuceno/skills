@@ -23,7 +23,7 @@ tools. Supports OpenAI models (gpt-image-1.5) and Black Forest Labs models
 ## Prerequisites
 
 - `az` CLI logged in (`az login`) to a subscription with an AI Services resource
-- `python3` (stdlib only)
+- `uv` ([astral.sh/uv](https://docs.astral.sh/uv/)) — runs scripts with inline dependency metadata
 - `magick` (ImageMagick) — required for FLUX transparency and grid trim
 
 ## Setup

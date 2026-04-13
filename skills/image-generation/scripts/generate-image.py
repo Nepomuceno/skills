@@ -300,9 +300,11 @@ def main() -> None:
 
     # Hint for FLUX + transparent
     if flux_transparent:
+        base, ext = os.path.splitext(args.output)
+        keyed_path = f"{base}_transparent{ext}"
         print(f"\n  Next: remove chroma key background with:")
         print(f"  uv run skills/image-generation/scripts/chroma-key.py \\")
-        print(f"    --input {args.output} --output {args.output}")
+        print(f"    --input {args.output} --output {keyed_path}")
 
     # Print usage info (OpenAI only — FLUX doesn't return usage)
     usage = response.get("usage", {})
