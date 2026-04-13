@@ -72,9 +72,9 @@ Description field rules:
 
 ## Docs
 
-- Every real skill must have an entry in `docs/skills.md`
+- Every real skill must have catalog entries in `docs/index.html` and `docs/skills.html`
 - Docs must stay aligned with actual skill folders
-- Docs publish from `/docs` via GitHub Pages — plain Markdown, no Jekyll
+- Docs publish from `/docs` via GitHub Pages — plain HTML, no Jekyll
 
 ## Anti-patterns
 

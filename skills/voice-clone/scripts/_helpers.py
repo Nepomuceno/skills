@@ -19,11 +19,32 @@ from xml.sax.saxutils import escape as _xml_escape
 from dotenv import load_dotenv
 
 
+REPO_ROOT = Path(__file__).resolve().parents[3]
+
+
 def load_env() -> None:
-    """Load .env from the current working directory."""
-    env_path = Path.cwd() / ".env"
-    if env_path.exists():
-        load_dotenv(env_path)
+    """Load .env from the current workspace or the repo root.
+
+    Users often invoke these scripts from the repo root, but sometimes call them
+    by path from a different directory. Search upward from cwd first, then fall
+    back to the repository root so the documented "project root" behavior works
+    consistently.
+    """
+    candidates: list[Path] = []
+
+    for base in [Path.cwd(), *Path.cwd().parents]:
+        env_path = base / ".env"
+        if env_path not in candidates:
+            candidates.append(env_path)
+
+    repo_env = REPO_ROOT / ".env"
+    if repo_env not in candidates:
+        candidates.append(repo_env)
+
+    for env_path in candidates:
+        if env_path.exists():
+            load_dotenv(env_path)
+            return
 
 
 def get_azure_config() -> dict[str, str]:
@@ -100,6 +121,27 @@ def human_size(path: Path) -> str:
             return f"{size:.1f} {unit}"
         size /= 1024
     return f"{size:.1f} TB"
+
+
+def save_audio_response(output_path: Path, response, *, label: str = "Audio") -> None:
+    """Persist successful audio responses and keep failures out of output files."""
+    if response.status_code == 200:
+        output_path.write_bytes(response.content)
+        print(f"SUCCESS! {label} saved to: {output_path} ({human_size(output_path)})")
+        return
+
+    error_path = output_path.with_suffix(output_path.suffix + ".error.txt")
+    try:
+        error_text = response.text
+    except Exception:
+        error_text = response.content.decode("utf-8", errors="replace")
+    error_path.write_text(error_text, encoding="utf-8")
+
+    print(f"FAILED with HTTP {response.status_code}", file=sys.stderr)
+    if error_text.strip():
+        print(f"  {error_text}", file=sys.stderr)
+    print(f"  Saved error details to: {error_path}", file=sys.stderr)
+    sys.exit(1)
 
 
 def log_step(msg: str) -> None:

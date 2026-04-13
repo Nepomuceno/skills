@@ -35,7 +35,7 @@ import httpx
 
 # Allow importing the helpers module from the same directory
 sys.path.insert(0, str(Path(__file__).parent))
-from _helpers import escape_xml, get_azure_config, get_token, human_size, load_env, log_step, resolve_path, safe_name
+from _helpers import escape_xml, get_azure_config, get_token, load_env, log_step, resolve_path, safe_name, save_audio_response
 
 
 def check_operation(client: httpx.Client, operation_url: str, token: str, max_attempts: int = 60) -> dict | None:
@@ -107,8 +107,9 @@ def main() -> None:
         elif resp.status_code == 409:
             print(f"  Project already exists: {project_id}")
         else:
-            print(f"  HTTP {resp.status_code}: {resp.text}")
-            print("  WARNING: Unexpected response, continuing anyway...")
+            print(f"  ERROR: Project creation failed with HTTP {resp.status_code}", file=sys.stderr)
+            print(f"  {resp.text}", file=sys.stderr)
+            sys.exit(1)
 
         # ── Step 3: Upload Consent ────────────────────────────────────
         log_step(f"Step 3: Uploading Consent Audio ({consent_id})")
@@ -238,17 +239,7 @@ def main() -> None:
             content=ssml.encode("utf-8"),
         )
 
-        if resp.status_code == 200:
-            output_file.write_bytes(resp.content)
-            print(f"  SUCCESS! Audio saved to: {output_file}")
-            print(f"  File size: {human_size(output_file)}")
-        else:
-            output_file.write_bytes(resp.content)
-            print(f"  HTTP {resp.status_code} - Synthesis may have failed")
-            try:
-                print(f"  Error: {resp.text}")
-            except Exception:
-                pass
+        save_audio_response(output_file, resp)
 
     log_step("Done!")
     print(f"  Speaker Profile ID: {speaker_profile_id}")

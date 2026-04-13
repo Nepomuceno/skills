@@ -53,7 +53,7 @@ Or copy `templates/skill-template/` to `skills/<slug>/` manually.
 
 Then:
 1. Edit `skills/<slug>/SKILL.md` — fill in name, description, instructions.
-2. Add an entry to `docs/skills.md`.
+2. Add catalog entries to `docs/index.html` and `docs/skills.html`.
 
 ## Conventions
 

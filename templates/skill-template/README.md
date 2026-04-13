@@ -22,4 +22,4 @@ cp -r templates/skill-template skills/my-skill
 # Edit skills/my-skill/SKILL.md
 ```
 
-After creating your skill, add an entry to `docs/skills.md`.
+After creating your skill, add catalog entries to `docs/index.html` and `docs/skills.html`.

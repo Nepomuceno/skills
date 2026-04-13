@@ -1,11 +1,14 @@
 # /// script
 # requires-python = ">=3.10"
-# dependencies = ["pyyaml"]
 # ///
-"""Check that docs/index.html and docs/skills.html list every skill in skills/.
+"""Check that docs/index.html and docs/skills.html stay aligned with skills/.
 
-Reads SKILL.md frontmatter for each skill directory, then scans both HTML files
-for references to each skill slug. Reports any skills missing from either page.
+Validates the skill catalog cards in both HTML files by checking:
+  - every real skill has exactly one GitHub link card
+  - no deleted/stale skill cards remain
+  - each card includes the expected slug heading
+  - each card includes the expected install command
+  - each card advertises the current scripts/ and references/ counts
 
 Exit code 0 = all in sync, 1 = drift detected.
 """
@@ -14,14 +17,15 @@ import re
 import sys
 from pathlib import Path
 
-import yaml
-
 REPO_ROOT = Path(__file__).resolve().parent.parent
 SKILLS_DIR = REPO_ROOT / "skills"
 DOCS_DIR = REPO_ROOT / "docs"
 
 INDEX_HTML = DOCS_DIR / "index.html"
 SKILLS_HTML = DOCS_DIR / "skills.html"
+GITHUB_SKILL_LINK_RE = re.compile(
+    r'https://github\.com/Nepomuceno/skills/tree/main/skills/([a-z][a-z0-9-]*)'
+)
 
 
 def get_skill_slugs() -> list[str]:
@@ -33,32 +37,47 @@ def get_skill_slugs() -> list[str]:
     )
 
 
-def get_skill_metadata(slug: str) -> dict:
-    """Read frontmatter from a skill's SKILL.md."""
-    skill_md = SKILLS_DIR / slug / "SKILL.md"
-    text = skill_md.read_text(encoding="utf-8")
-    if not text.startswith("---"):
-        return {"name": slug}
-    parts = text.split("---", 2)
-    if len(parts) < 3:
-        return {"name": slug}
-    try:
-        fm = yaml.safe_load(parts[1])
-        return fm if isinstance(fm, dict) else {"name": slug}
-    except yaml.YAMLError:
-        return {"name": slug}
+def get_skill_counts(slug: str) -> tuple[int, int]:
+    """Return (scripts_count, references_count) for a skill directory."""
+    skill_dir = SKILLS_DIR / slug
+
+    def count_files(subdir: str) -> int:
+        path = skill_dir / subdir
+        if not path.is_dir():
+            return 0
+        return sum(1 for entry in path.iterdir() if entry.is_file() and not entry.name.startswith("."))
+
+    return count_files("scripts"), count_files("references")
 
 
-def find_skill_references(html_content: str, slug: str) -> bool:
-    """Check if a skill slug is referenced in an HTML file.
+def get_doc_skill_links(html_content: str) -> list[str]:
+    """Return all skill slugs linked from GitHub catalog cards."""
+    return GITHUB_SKILL_LINK_RE.findall(html_content)
 
-    Looks for the slug in GitHub links (skills/<slug>) or as heading text.
-    """
-    patterns = [
-        rf"skills/{re.escape(slug)}",  # GitHub link path
-        rf">{re.escape(slug)}<",       # Heading/link text
-    ]
-    return any(re.search(p, html_content) for p in patterns)
+
+def validate_skill_card(html_content: str, slug: str) -> list[str]:
+    """Validate the visible catalog data for a single skill card."""
+    errors: list[str] = []
+    match = GITHUB_SKILL_LINK_RE.search(html_content)
+    while match and match.group(1) != slug:
+        match = GITHUB_SKILL_LINK_RE.search(html_content, match.end())
+
+    if not match:
+        return [f"missing GitHub card for skill: {slug}"]
+
+    window = html_content[match.start():match.start() + 2500]
+    scripts_count, references_count = get_skill_counts(slug)
+
+    if not re.search(rf">\s*{re.escape(slug)}\s*<", window):
+        errors.append(f"skill card for {slug} is missing its slug heading")
+    if not re.search(rf"--skill.*?{re.escape(slug)}", window, re.DOTALL):
+        errors.append(f"skill card for {slug} is missing its install command")
+    if not re.search(rf">\s*{scripts_count}\s+scripts\s*<", window):
+        errors.append(f"skill card for {slug} has wrong scripts count (expected {scripts_count})")
+    if not re.search(rf">\s*{references_count}\s+references\s*<", window):
+        errors.append(f"skill card for {slug} has wrong references count (expected {references_count})")
+
+    return errors
 
 
 def main() -> None:
@@ -78,20 +97,30 @@ def main() -> None:
 
         content = html_file.read_text(encoding="utf-8")
         relative = html_file.relative_to(REPO_ROOT)
+        linked_slugs = get_doc_skill_links(content)
+        linked_set = set(linked_slugs)
+        actual_set = set(slugs)
+
+        for slug in sorted(actual_set - linked_set):
+            errors.append(f"{relative} is missing skill card: {slug}")
+        for slug in sorted(linked_set - actual_set):
+            errors.append(f"{relative} has stale skill card: {slug}")
+        for slug in sorted({slug for slug in linked_slugs if linked_slugs.count(slug) > 1}):
+            errors.append(f"{relative} has duplicate skill card: {slug}")
 
         for slug in slugs:
-            if not find_skill_references(content, slug):
-                errors.append(f"{relative} is missing skill: {slug}")
+            for err in validate_skill_card(content, slug):
+                errors.append(f"{relative}: {err}")
 
     if errors:
         print("Docs are out of sync with skills/ directory:\n")
         for err in errors:
             print(f"  - {err}")
         print(f"\nFound {len(errors)} issue(s).")
-        print("\nTo fix: add catalog entries for the missing skills in the docs files.")
+        print("\nTo fix: update the catalog cards in docs/index.html and docs/skills.html.")
         sys.exit(1)
     else:
-        print(f"Docs are in sync. All {len(slugs)} skill(s) listed in both pages.")
+        print(f"Docs are in sync. All {len(slugs)} skill(s) have valid catalog cards in both pages.")
 
 
 if __name__ == "__main__":

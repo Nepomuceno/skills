@@ -26,7 +26,7 @@ from pathlib import Path
 import httpx
 
 sys.path.insert(0, str(Path(__file__).parent))
-from _helpers import escape_xml, get_azure_config, get_token, human_size, load_env, resolve_path
+from _helpers import escape_xml, get_azure_config, get_token, load_env, resolve_path, save_audio_response
 
 
 def main() -> None:
@@ -83,17 +83,7 @@ def main() -> None:
             content=ssml.encode("utf-8"),
         )
 
-    if resp.status_code == 200:
-        output_file.write_bytes(resp.content)
-        print(f"SUCCESS! Audio saved to: {output_file} ({human_size(output_file)})")
-    else:
-        output_file.write_bytes(resp.content)
-        print(f"FAILED with HTTP {resp.status_code}", file=sys.stderr)
-        try:
-            print(f"  {resp.text}", file=sys.stderr)
-        except Exception:
-            pass
-        sys.exit(1)
+    save_audio_response(output_file, resp)
 
 
 if __name__ == "__main__":
