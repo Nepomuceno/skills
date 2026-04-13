@@ -6,14 +6,26 @@ on:
     paths:
       - 'skills/**'
       - 'docs/**'
+      - 'README.md'
+      - 'AGENTS.md'
+      - 'templates/skill-template/**'
+      - 'scripts/new-skill.py'
+      - 'scripts/serve-docs.py'
       - 'scripts/validate-skills.py'
       - 'scripts/sync-docs.py'
+      - '.github/workflows/validate-skills.yml'
   pull_request:
     paths:
       - 'skills/**'
       - 'docs/**'
+      - 'README.md'
+      - 'AGENTS.md'
+      - 'templates/skill-template/**'
+      - 'scripts/new-skill.py'
+      - 'scripts/serve-docs.py'
       - 'scripts/validate-skills.py'
       - 'scripts/sync-docs.py'
+      - '.github/workflows/validate-skills.yml'
 
 jobs:
   validate:

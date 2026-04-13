@@ -66,18 +66,35 @@ class ReloadHandler(http.server.SimpleHTTPRequestHandler):
         self.send_header("Cache-Control", "no-store")
         super().end_headers()
 
+    def _html_path(self) -> Path | None:
+        path = Path(self.translate_path(self.path))
+        if path.is_dir():
+            index = path / "index.html"
+            return index if index.is_file() else None
+        if path.is_file() and path.suffix == ".html":
+            return path
+        return None
+
     def send_head(self):  # type: ignore[override]
-        result = super().send_head()
-        if result is None:
-            return None
-        is_html = self.path.endswith((".html", "/")) or self.path == "/"
-        if is_html:
-            content = result.read()
-            result.close()
+        html_path = self._html_path()
+        if html_path is not None:
+            try:
+                content = html_path.read_bytes()
+            except OSError:
+                self.send_error(404, "File not found")
+                return None
+
             if b"</body>" in content:
                 content = content.replace(b"</body>", RELOAD_SCRIPT + b"</body>")
+
+            self.send_response(200)
+            self.send_header("Content-Type", self.guess_type(str(html_path)))
+            self.send_header("Content-Length", str(len(content)))
+            self.send_header("Last-Modified", self.date_time_string(html_path.stat().st_mtime))
+            self.end_headers()
             return io.BytesIO(content)
-        return result
+
+        return super().send_head()
 
     def log_message(self, format, *args):
         if "/__reload" not in str(args[0]):

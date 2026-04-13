@@ -41,7 +41,7 @@ def main() -> None:
     skill_md.write_text(content)
 
     print(f"Created: {dest}")
-    print(f"Next: edit {skill_md} and add an entry to docs/skills.md")
+    print(f"Next: edit {skill_md} and add catalog entries to docs/index.html and docs/skills.html")
 
 
 if __name__ == "__main__":

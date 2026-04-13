@@ -29,10 +29,8 @@ or magick (ImageMagick) as available.
 import argparse
 import os
 import shutil
-import struct
 import subprocess
 import sys
-import zlib
 
 
 def get_image_size(path: str) -> tuple[int, int]:
@@ -90,34 +88,11 @@ def crop_image(src: str, dst: str, x: int, y: int, w: int, h: int) -> None:
 
 
 def trim_transparent(path: str) -> None:
-    """Trim fully-transparent edges from a PNG using magick or sips+manual."""
-    if shutil.which("magick"):
-        # -trim removes borders that match the edge color.
-        # For transparent PNGs, this removes transparent rows/cols from edges.
-        # -fuzz 1% allows near-transparent pixels (alpha < 3) to be trimmed too.
-        subprocess.run(
-            ["magick", path, "-fuzz", "1%", "-trim", "+repage", path],
-            check=True, capture_output=True
-        )
-        return
-
-    # Fallback: sips doesn't support trim — require magick
-    if not shutil.which("magick"):
-        print(f"  Warning: --trim requires magick (ImageMagick). Install with: brew install imagemagick",
-              file=sys.stderr)
-        return
-    bbox = _find_content_bbox(path)
-    if bbox is None:
-        return  # entirely transparent or couldn't read — leave as-is
-    x, y, x2, y2 = bbox
-    w = x2 - x
-    h = y2 - y
-    if w <= 0 or h <= 0:
-        return
-    # Re-crop to the content bounding box
-    tmp = path + ".tmp.png"
-    crop_image(path, tmp, x, y, w, h)
-    os.replace(tmp, path)
+    """Trim fully-transparent edges from a PNG using ImageMagick."""
+    subprocess.run(
+        ["magick", path, "-fuzz", "1%", "-trim", "+repage", path],
+        check=True, capture_output=True
+    )
 
 
 def validate_tile(path: str, min_content_pct: float = 1.0) -> tuple[bool, float]:
@@ -138,122 +113,21 @@ def validate_tile(path: str, min_content_pct: float = 1.0) -> tuple[bool, float]
 
 
 def _get_alpha_stats(path: str) -> tuple[int, int] | None:
-    """Get (total_pixels, non_transparent_pixels) using magick or raw PNG parsing.
-
-    Returns None if alpha channel can't be read.
-    """
-    if shutil.which("magick"):
-        # Use magick to get the percentage of opaque pixels
-        # %[fx:mean] on the alpha channel gives avg alpha (0=transparent, 1=opaque)
-        result = subprocess.run(
-            ["magick", path, "-channel", "A", "-separate",
-             "-format", "%[fx:mean] %[fx:w*h]", "info:"],
-            capture_output=True, text=True
-        )
-        if result.returncode == 0 and result.stdout.strip():
-            parts = result.stdout.strip().split()
-            if len(parts) >= 2:
-                try:
-                    mean_alpha = float(parts[0])
-                    total = int(float(parts[1]))
-                    opaque = int(total * mean_alpha)
-                    return total, opaque
-                except ValueError:
-                    pass
-
-    # Fallback: try raw PNG parsing (handles RGBA PNGs only)
-    return _parse_png_alpha(path)
-
-
-def _parse_png_alpha(path: str) -> tuple[int, int] | None:
-    """Parse a PNG file and count non-transparent pixels.
-
-    Only works with RGBA color type (6). Returns None for other types.
-    """
-    try:
-        with open(path, "rb") as f:
-            sig = f.read(8)
-            if sig != b"\x89PNG\r\n\x1a\n":
-                return None
-
-            width = height = 0
-            bit_depth = 0
-            color_type = 0
-            idat_chunks = []
-
-            while True:
-                chunk_header = f.read(8)
-                if len(chunk_header) < 8:
-                    break
-                length = struct.unpack(">I", chunk_header[:4])[0]
-                chunk_type = chunk_header[4:8]
-
-                data = f.read(length)
-                f.read(4)  # CRC
-
-                if chunk_type == b"IHDR":
-                    width = struct.unpack(">I", data[0:4])[0]
-                    height = struct.unpack(">I", data[4:8])[0]
-                    bit_depth = data[8]
-                    color_type = data[9]
-                elif chunk_type == b"IDAT":
-                    idat_chunks.append(data)
-                elif chunk_type == b"IEND":
-                    break
-
-            if color_type != 6:  # Not RGBA
-                return None
-            if bit_depth != 8:
-                return None
-
-            # Decompress pixel data
-            # NOTE: This doesn't implement PNG scanline unfiltering — only
-            # correct for filter type 0 (None). Results may be inaccurate for
-            # PNGs with other filter types. Install magick for reliable validation.
-            compressed = b"".join(idat_chunks)
-            raw = zlib.decompress(compressed)
-
-            # RGBA: 4 bytes per pixel, plus 1 filter byte per row
-            stride = width * 4 + 1
-            total = width * height
-            opaque = 0
-
-            for row_idx in range(height):
-                row_start = row_idx * stride + 1  # skip filter byte
-                for col in range(width):
-                    px_start = row_start + col * 4
-                    alpha = raw[px_start + 3]
-                    if alpha > 0:
-                        opaque += 1
-
-            return total, opaque
-
-    except Exception:
-        return None
-
-
-def _find_content_bbox(path: str) -> tuple[int, int, int, int] | None:
-    """Find the bounding box of non-transparent content in a PNG.
-
-    Returns (x, y, x2, y2) or None if image is fully transparent / can't read.
-    """
-    if shutil.which("magick"):
-        # magick gives us the trim bounding box without actually trimming
-        result = subprocess.run(
-            ["magick", path, "-fuzz", "1%", "-format", "%@", "info:"],
-            capture_output=True, text=True
-        )
-        if result.returncode == 0 and result.stdout.strip():
-            # Format: WxH+X+Y
-            info = result.stdout.strip()
+    """Get (total_pixels, non_transparent_pixels) using ImageMagick."""
+    result = subprocess.run(
+        ["magick", path, "-channel", "A", "-separate",
+         "-format", "%[fx:mean] %[fx:w*h]", "info:"],
+        capture_output=True, text=True
+    )
+    if result.returncode == 0 and result.stdout.strip():
+        parts = result.stdout.strip().split()
+        if len(parts) >= 2:
             try:
-                dims, offsets = info.split("+", 1)
-                w, h = dims.split("x")
-                x_off, y_off = offsets.split("+")
-                x = int(x_off)
-                y = int(y_off)
-                return x, y, x + int(w), y + int(h)
-            except (ValueError, IndexError):
+                mean_alpha = float(parts[0])
+                total = int(float(parts[1]))
+                opaque = int(total * mean_alpha)
+                return total, opaque
+            except ValueError:
                 pass
     return None
 
@@ -271,6 +145,17 @@ def main() -> None:
     parser.add_argument("--min-content-pct", type=float, default=1.0,
                         help="Minimum %% of non-transparent pixels for a tile to pass validation (default: 1)")
     args = parser.parse_args()
+
+    if args.trim and not shutil.which("magick"):
+        print("Error: --trim requires magick (ImageMagick). Install with: brew install imagemagick",
+              file=sys.stderr)
+        sys.exit(1)
+
+    if args.validate and not shutil.which("magick"):
+        print("Error: --validate requires magick (ImageMagick) for reliable alpha analysis.",
+              file=sys.stderr)
+        print("Install with: brew install imagemagick", file=sys.stderr)
+        sys.exit(1)
 
     if not os.path.exists(args.input):
         print(f"Input file not found: {args.input}", file=sys.stderr)
