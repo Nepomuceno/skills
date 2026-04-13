@@ -1,6 +1,5 @@
 # /// script
 # requires-python = ">=3.10"
-# dependencies = ["pyyaml"]
 # ///
 """Check that docs/index.html and docs/skills.html stay aligned with skills/.
 
@@ -59,10 +58,7 @@ def get_doc_skill_links(html_content: str) -> list[str]:
 def validate_skill_card(html_content: str, slug: str) -> list[str]:
     """Validate the visible catalog data for a single skill card."""
     errors: list[str] = []
-    match = GITHUB_SKILL_LINK_RE.search(
-        html_content,
-        pos=0,
-    )
+    match = GITHUB_SKILL_LINK_RE.search(html_content)
     while match and match.group(1) != slug:
         match = GITHUB_SKILL_LINK_RE.search(html_content, match.end())
 

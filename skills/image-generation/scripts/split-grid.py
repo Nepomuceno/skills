@@ -101,35 +101,40 @@ def validate_tile(path: str, min_content_pct: float = 1.0) -> tuple[bool, float]
     Returns (is_valid, content_percentage).
     A tile is valid if at least min_content_pct% of pixels are non-transparent.
     """
-    stats = _get_alpha_stats(path)
-    if stats is None:
-        # Can't read alpha — assume valid (might be opaque image)
-        return True, 100.0
-    total, opaque_count = stats
+    total, opaque_count = _get_alpha_stats(path)
     if total == 0:
         return False, 0.0
     pct = (opaque_count / total) * 100
     return pct >= min_content_pct, pct
 
 
-def _get_alpha_stats(path: str) -> tuple[int, int] | None:
+def _get_alpha_stats(path: str) -> tuple[int, int]:
     """Get (total_pixels, non_transparent_pixels) using ImageMagick."""
     result = subprocess.run(
         ["magick", path, "-channel", "A", "-separate",
          "-format", "%[fx:mean] %[fx:w*h]", "info:"],
         capture_output=True, text=True
     )
-    if result.returncode == 0 and result.stdout.strip():
-        parts = result.stdout.strip().split()
-        if len(parts) >= 2:
-            try:
-                mean_alpha = float(parts[0])
-                total = int(float(parts[1]))
-                opaque = int(total * mean_alpha)
-                return total, opaque
-            except ValueError:
-                pass
-    return None
+    if result.returncode != 0:
+        print(f"Error: ImageMagick failed to analyze alpha for {path}", file=sys.stderr)
+        if result.stderr.strip():
+            print(result.stderr.strip(), file=sys.stderr)
+        sys.exit(1)
+
+    parts = result.stdout.strip().split()
+    if len(parts) < 2:
+        print(f"Error: unexpected alpha stats output for {path}: {result.stdout!r}", file=sys.stderr)
+        sys.exit(1)
+
+    try:
+        mean_alpha = float(parts[0])
+        total = int(float(parts[1]))
+    except ValueError:
+        print(f"Error: could not parse alpha stats for {path}: {result.stdout!r}", file=sys.stderr)
+        sys.exit(1)
+
+    opaque = int(total * mean_alpha)
+    return total, opaque
 
 
 def main() -> None:
