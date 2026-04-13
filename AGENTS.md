@@ -84,3 +84,23 @@ Description field rules:
 - Hidden magic or implicit conventions
 - Config files that don't change behavior
 - Wrapper scripts around single commands
+
+## Skill-building lessons
+
+SKILL.md:
+- SKILL.md loads on every invocation — every token counts. Move detailed instructions, examples, and pattern-specific guidance into `references/`
+- Never put environment-specific info (endpoints, subscription IDs, account names, deployed model names) in the skill. Use a discovery script at runtime instead
+- The description field should list every phrase a user might type that should activate the skill
+
+Scripts:
+- Separate concerns into independent scripts. If a workflow has a step you might want to iterate on, make it its own script so you don't re-run expensive earlier steps
+- Auto-detect rather than assume. If a model or tool produces approximate results, detect the actual output and adapt rather than hardcoding expected values
+- Progressive/multi-pass approaches beat single-pass when dealing with fuzzy boundaries or gradual transitions
+
+References:
+- Default prompt suffixes or templates should only control layout/structure, not content-specific details like colors. The caller controls appearance
+- State a principle once in SKILL.md. Don't copy-paste the same instruction into every reference file
+
+Testing:
+- Use a gitignored workspace directory for test artifacts
+- A/B test with the user — generate multiple variants with different techniques, let the user judge, codify the winner
