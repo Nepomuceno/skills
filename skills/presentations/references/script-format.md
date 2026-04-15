@@ -99,7 +99,7 @@ listen. Let that sink in for a second."
 
 Bad example:
 "This slide shows a quote from Ron Jeffries about story points being
-wasteful." (just repeats the slide — useless as notes)>
+wasteful." (just repeats the slide — useless as notes)
 
 ### Visual approach
 <Which layout pattern and any specific details:

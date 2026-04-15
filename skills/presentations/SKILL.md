@@ -37,8 +37,8 @@ Phase 1: Discovery  -->  Phase 2: Script  -->  Phase 3: Review
 
 Goal: understand what the user wants before writing a single word.
 
-Use the question tool to present all required questions in ONE call.
-Add optional questions in the same call when relevant.
+Ask all required questions in a single message.
+Include optional questions in the same message when relevant.
 
 ### Required questions (always ask)
 
