@@ -13,12 +13,12 @@ description: >
   This skill produces hand-crafted SVG with IBM Plex Mono typography, clean geometric shapes, and a configurable
   color palette, supporting layouts from a simple three-panel pipeline up to full multi-row ecosystem maps
   (1200×860) with sub-card grids, cross-cutting dashed connectors, and feedback arcs.
-  Diagrams render natively on GitHub/GitLab and include PNG fallback generation via Playwright.
+  Diagrams render natively on any git forge that displays SVGs (GitHub, etc.) and include PNG fallback generation via Playwright.
 ---
 
 # Architecture Diagram Skill
 
-Generate production-quality SVG architecture diagrams for project READMEs and documentation. These diagrams follow the Nomograph visual language: monospace typography, geometric precision, zero border-radius, and a clear left-to-right information flow.
+Generate production-quality SVG architecture diagrams for project READMEs and documentation. These diagrams follow an engineering-schematic visual language: monospace typography, geometric precision, zero border-radius, and a clear left-to-right information flow.
 
 ## When to Use
 
@@ -41,7 +41,7 @@ The diagrams are inspired by engineering schematics and brutalist typography:
 
 ## SVG Structure
 
-Every diagram shares the same outer chrome — a dark **title bar** with project name and subtitle, an optional **subhead strip** (1-line summary on the left, status/qualifier on the right), an inner content area, and a **footer** with tagline + "Built with GitLab" logo. What lives between header and footer is **whatever layout best represents the system** — the three-panel pipeline is one option, not the rule.
+Every diagram shares the same outer chrome — a dark **title bar** with project name and subtitle, an optional **subhead strip** (1-line summary on the left, status/qualifier on the right), an inner content area, and a **footer** with tagline (optionally followed by a small "Built with X" attribution mark). What lives between header and footer is **whatever layout best represents the system** — the three-panel pipeline is one option, not the rule.
 
 ### Dimensions
 
@@ -55,7 +55,7 @@ Every diagram shares the same outer chrome — a dark **title bar** with project
 
 ### Panel Layouts — Pick Whatever Fits
 
-The diagrams below are all production examples from real Nomograph projects. Choose by **what the system actually is**, not by default.
+The layouts below are all drawn from production examples. Choose by **what the system actually is**, not by default.
 
 | Layout | When to use | viewBox | Example |
 |--------|-------------|---------|---------|
@@ -98,7 +98,7 @@ For tool-ecosystem diagrams (multiple cooperating components, not a single linea
 │  FOUNDATION (full width — registry, substrate, kernel)       │   ← row 3: foundation
 │  provides: a · b · c · d · e · f ...                         │
 ├──────────────────────────────────────────────────────────────┤
-│ FOOTER + GitLab logo                                         │
+│ FOOTER (tagline + optional attribution mark)                 │
 └──────────────────────────────────────────────────────────────┘
 ```
 
@@ -230,19 +230,17 @@ For cross-row diagonal arrows between non-adjacent peers (ecosystem-style), use 
 
 Define a second arrow marker (e.g. `id="ards"`) in muted color so dashed cross-arrows don't visually compete with the primary solid arrows.
 
-### Footer with GitLab logo
+### Footer
 
-The Nomograph convention places "Built with GitLab" + the multicolor fox-tanuki logo centered below the tagline:
+A divider line + a centered tagline. Optionally append a small "Built with X" attribution mark below it (project host, internal team, etc.) — keep it muted so it doesn't compete with the diagram body:
 
 ```xml
 <line x1="40" y1="370" x2="1160" y2="370" stroke="#c4b99a" stroke-width="1"/>
 <text x="600" y="392" font-family="'IBM Plex Mono', monospace"
       font-size="10" fill="#6b5d4f" text-anchor="middle">tagline</text>
-<text x="590" y="416" text-anchor="middle" fill="#2c2417"
-      font-family="'IBM Plex Mono', monospace" font-size="9" font-weight="600">Built with GitLab</text>
-<g transform="translate(634, 405) scale(0.045)">
-  <!-- four-path GitLab tanuki logo, see references/examples.md for full markup -->
-</g>
+<!-- optional attribution: -->
+<text x="600" y="416" text-anchor="middle" fill="#2c2417"
+      font-family="'IBM Plex Mono', monospace" font-size="9" font-weight="600">Built with X</text>
 ```
 
 Adjust the y coordinates of the line and text relative to the SVG height (the line sits ~60px above bottom for 430-height; ~80px for taller diagrams).
@@ -301,7 +299,7 @@ Place the hero as the very first line of the README:
 ...
 ```
 
-This follows the Nomograph convention: hero first, then title, then badges, then description.
+Convention: hero first, then title, then badges, then description.
 
 ## Adaptation
 

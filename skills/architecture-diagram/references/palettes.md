@@ -2,7 +2,7 @@
 
 ## Industrial (Default)
 
-The original Nomograph palette — warm parchment tones with dark brown ink.
+Warm parchment tones with dark brown ink — engineering-schematic feel.
 
 ```
 primary:    #2c2417   (dark brown — text, borders, title bar)

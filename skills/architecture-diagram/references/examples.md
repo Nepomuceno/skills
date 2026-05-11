@@ -1,9 +1,8 @@
 # SVG Examples
 
-## Three-Panel Pipeline (Nomograph Style)
+## Three-Panel Pipeline (canonical layout)
 
-This is the canonical layout used by Nomograph projects (kebnf, jig, muxr).
-Left-to-right flow: Input → Process → Output.
+The default layout. Left-to-right flow: Input → Process → Output. Good for converters, compilers, and sync tools.
 
 ```svg
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 430" width="1200" height="430">
@@ -114,7 +113,7 @@ Use this to estimate text positioning and prevent overflow:
 
 ## Multi-Row Tool Ecosystem (1200 × 860)
 
-Use this when the system is a set of peer tools that compose around a shared substrate/foundation — *not* a single linear pipeline. Real example: `ecosystem.svg` from `nomograph/gitlab-profile`.
+Use this when the system is a set of peer tools that compose around a shared substrate/foundation — *not* a single linear pipeline.
 
 ```svg
 <svg viewBox="0 0 1200 860" xmlns="http://www.w3.org/2000/svg">
@@ -203,7 +202,7 @@ Use this when the system is a set of peer tools that compose around a shared sub
 
 ## Cycle / Methodology with Feedback Arc (1200 × 430)
 
-Use this for "build → measure → refine" style processes. Real example: `hero-methodology.svg`.
+Use this for "build → measure → refine" style processes.
 
 ```svg
 <!-- Standard three panels (BUILD / MEASURE / REFINE) with arrows between -->
@@ -222,7 +221,7 @@ The arc uses two quadratic curves (`Q`) for rounded corners and a straight line 
 
 ## Apparatus Layout (Domain → Apparatus → Discoveries+Outputs)
 
-Asymmetric three-panel where the center is wider than the wings, and the right side is split into two stacked panels. Real example: `hero-apparatus.svg`.
+Asymmetric three-panel where the center is wider than the wings, and the right side is split into two stacked panels.
 
 Key features:
 - **Above-panel uppercase labels** with `letter-spacing="0.08em"` instead of dark header bars
@@ -252,7 +251,7 @@ Key features:
 
 ## Synchronized State Table (inside an outputs panel)
 
-For showing N subsystems kept in lockstep on the same "address". Real example: `muxr.svg` outputs panel.
+For showing N subsystems kept in lockstep on the same "address".
 
 ```svg
 <!-- Three column headers -->
@@ -281,7 +280,7 @@ Each row represents one synchronized address; each column represents one subsyst
 
 ## Catalog + Contract + Consumer (1200 × 430)
 
-For reusable components that get consumed by multiple downstream projects. Real example: `pipeline.svg`.
+For reusable components that get consumed by multiple downstream projects.
 
 Layout:
 - **Left column**: stack of small component cards, each with its own mini header bar (22px tall) and 2-line description
@@ -307,40 +306,17 @@ Layout:
 
 ---
 
-## GitLab Footer Logo
+## Footer Block
 
-Reusable footer block (place at the bottom of any diagram):
+Reusable footer (place at the bottom of any diagram):
 
 ```svg
 <line x1="40" y1="FOOTER_Y" x2="1160" y2="FOOTER_Y" stroke="MUTED" stroke-width="1"/>
 <text x="600" y="FOOTER_Y+20" font-family="'IBM Plex Mono', monospace" font-size="10"
       fill="SECONDARY" text-anchor="middle">tagline / summary</text>
-<text x="590" y="FOOTER_Y+46" text-anchor="middle" fill="PRIMARY"
-      font-family="'IBM Plex Mono', monospace" font-size="9" font-weight="600">Built with GitLab</text>
-<g transform="translate(634, FOOTER_Y+35) scale(0.045)">
-  <path d="M282.83,170.73l-.27-.69-26.14-68.22a6.81,6.81,0,0,0-2.69-3.24,7,7,0,0,0-8,.43,7,7,0,0,0-2.32,3.52l-17.65,54H154.29l-17.65-54A6.86,6.86,0,0,0,134.32,99a7,7,0,0,0-8-.43,6.87,6.87,0,0,0-2.69,3.24L97.44,170l-.26.69a48.54,48.54,0,0,0,16.1,56.1l.09.07.24.17,39.82,29.82,19.7,14.91,12,9.06a8.07,8.07,0,0,0,9.76,0l12-9.06,19.7-14.91,40.06-30,.1-.08A48.56,48.56,0,0,0,282.83,170.73Z" fill="#E24329"/>
-  <path d="M282.83,170.73l-.27-.69a88.3,88.3,0,0,0-35.15,15.8L190,229.25c19.55,14.79,36.57,27.64,36.57,27.64l40.06-30,.1-.08A48.56,48.56,0,0,0,282.83,170.73Z" fill="#FC6D26"/>
-  <path d="M153.43,256.89l19.7,14.91,12,9.06a8.07,8.07,0,0,0,9.76,0l12-9.06,19.7-14.91S209.55,244,190,229.25C170.45,244,153.43,256.89,153.43,256.89Z" fill="#FCA326"/>
-  <path d="M132.58,185.84A88.19,88.19,0,0,0,97.44,170l-.26.69a48.54,48.54,0,0,0,16.1,56.1l.09.07.24.17,39.82,29.82s17-12.85,36.57-27.64Z" fill="#FC6D26"/>
-</g>
+<!-- Optional attribution line below the tagline: -->
+<text x="600" y="FOOTER_Y+44" text-anchor="middle" fill="PRIMARY"
+      font-family="'IBM Plex Mono', monospace" font-size="9" font-weight="600">Built with X</text>
 ```
 
-Use `FOOTER_Y = height - 70` (e.g. 360 for height 430, 780 for height 860). The logo is hardcoded to the GitLab tanuki — replace with another vendor mark (or omit the `<g>` and just keep the "Built with X" text) for non-GitLab hosting.
-
----
-
-## Reference SVGs in the wild
-
-These are all live in `gitlab.com/nomograph/*` and worth fetching for inspiration before drafting a new diagram:
-
-| File | Layout | Notes |
-|------|--------|-------|
-| `kit/hero.svg` | three-panel pipeline | classic input/process/output with stacked sub-sections |
-| `rune/hero.svg` | three-panel pipeline | uses defs/marker for arrows; right panel has inline command + description columns |
-| `muxr/hero.svg` | three-panel + state table | center panel embeds a multiplexer schematic (converging rails through junction); right panel is a 3-column synchronized state table |
-| `pipeline/hero.svg` | catalog + contract + consumer | stacked component cards left, dashed example block center, grouped consumer list right |
-| `lever/hero.svg` | minimal three-panel | simplest possible OV-1, good starting template |
-| `gitlab-profile/ecosystem.svg` | **multi-row grid, 1200×860** | row of peers → orchestrator with sub-card grid → foundation; dashed cross-arrows |
-| `gitlab-profile/hero-apparatus.svg` | apparatus (asymmetric 3-panel) | above-panel uppercase labels with letter-spacing; right column split into Discoveries+Outputs; long feedback arc |
-| `gitlab-profile/hero-methodology.svg` | cycle | three-panel BUILD/MEASURE/REFINE with curved dashed feedback arc back to start |
-| `gitlab-profile/hero-harness.svg` | four-panel (Dev → Harness → Outputs) | center harness panel is widest (480px) and lists 5 tools with substrate below a divider |
+Use `FOOTER_Y = height - 70` (e.g. 360 for height 430, 780 for height 860). Drop the attribution line entirely for a cleaner footer, or replace "X" with the project host / team / framework you want to credit. If a vendor logo is desired, inline its SVG paths inside a `<g transform="translate(cx, cy) scale(s)">` next to the attribution text.
