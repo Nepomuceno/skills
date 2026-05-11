@@ -13,9 +13,10 @@ npx skills add Nepomuceno/skills
 Or install a specific skill:
 
 ```bash
-npx skills add Nepomuceno/skills --skill image-generation
-npx skills add Nepomuceno/skills --skill voice-clone
+npx skills add Nepomuceno/skills --skill <skill-name>
 ```
+
+Replace `<skill-name>` with any skill listed below.
 
 Works with Claude Code, OpenCode, Cursor, Codex, GitHub Copilot, and [40+ other agents](https://github.com/vercel-labs/skills#supported-agents).
 
@@ -23,7 +24,7 @@ Works with Claude Code, OpenCode, Cursor, Codex, GitHub Copilot, and [40+ other 
 
 | Skill | Description |
 |-------|-------------|
-| [architecture-diagram](skills/architecture-diagram) | Hand-crafted SVG architecture diagrams, hero images, tool-ecosystem maps, and methodology diagrams with IBM Plex Mono typography |
+| [architecture-diagram](skills/architecture-diagram) | Hand-crafted SVG architecture diagrams, hero images, tool-ecosystem maps, methodology and apparatus diagrams. IBM Plex Mono typography, configurable palette, layouts from three-panel pipelines up to 1200x860 multi-row ecosystems |
 | [image-generation](skills/image-generation) | Generate images via Azure AI Foundry, split grids, and post-process with CLI tools |
 | [presentations](skills/presentations) | Script-first slide deck creation. Discovery → markdown script → React+TypeScript slides with Tailwind v4 and Framer Motion |
 | [voice-clone](skills/voice-clone) | Clone voices and generate speech via Azure Cognitive Services and Azure OpenAI TTS |
