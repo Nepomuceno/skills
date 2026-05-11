@@ -23,7 +23,9 @@ Works with Claude Code, OpenCode, Cursor, Codex, GitHub Copilot, and [40+ other 
 
 | Skill | Description |
 |-------|-------------|
+| [architecture-diagram](skills/architecture-diagram) | Hand-crafted SVG architecture diagrams, hero images, tool-ecosystem maps, and methodology diagrams with IBM Plex Mono typography |
 | [image-generation](skills/image-generation) | Generate images via Azure AI Foundry, split grids, and post-process with CLI tools |
+| [presentations](skills/presentations) | Script-first slide deck creation. Discovery → markdown script → React+TypeScript slides with Tailwind v4 and Framer Motion |
 | [voice-clone](skills/voice-clone) | Clone voices and generate speech via Azure Cognitive Services and Azure OpenAI TTS |
 
 ## What this is
